@@ -1,4 +1,4 @@
-import fs from fs;                                          // FileSistem = FS
+import fs from "fs";                                          // FileSistem = FS
 import { v4 as uuidv4 } from 'uuid';                        // Libreria para generar ids aleatorios
 
 class ProductManager {
@@ -42,10 +42,10 @@ class ProductManager {
         try {
             const products = await this.getAll();                                   //Llamo al array de productos ya sea vacio o con los objetos que tenga dentro  
             const product = products.find(product => product.id === id);            //Si el iterador encuentra el id que le estamos pasando por parametros, nos devovlera el producto
-            if (!product) throw new Error ('Este Producto no existe');              //Si el id no se encuentra nos creara este nuevo error
+            if (!product) return null;              //Si el id no se encuentra nos creara este nuevo error
             return product;                                                         //Pero si el id si existe nos devolvera el producto especificado
         } catch (error) {                                                           //Si el producto no se encuentra nos devolvera el error creado con anterioridad
-            throw (error);
+            throw new Error (error);
         }
     }
 
