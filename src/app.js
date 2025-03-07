@@ -7,6 +7,7 @@ import MongoStore from "connect-mongo";
 import productRouter from "./routes/products.router.js"; //Importamos todos los metodos manejables desde endpoints de productos
 import cookiesRouter from "./routes/cookies.router.js"; //Importamos todos los metodos manejables desde endpoints de cookies
 import usersRouter from "./routes/users.router.js"; //Importamos todos los metodos manejables desde endpoints de usuarios
+import viewsRouter from "./routes/views.router.js"; //Importamos todos los metodos manejables desde endpoints de vistas
 
 import { connectDB } from "./config/mongoose.config.js"; //Importamos la funcion de conexion a la base de datos
 import { errorHandler } from "./middlewares/error.handler.js"; //Importamos el manejador de errores
@@ -37,11 +38,12 @@ const sessionConfig = {                         //Configuracion de la sesion
 app.use(session(sessionConfig)); //Usamos el modulo de sesiones
 
 
-app.get("/", (req, res) => {res.send("hola Mundo")}); //Pagina principal
+app.get("/", (req, res) => {res.render("home", { title: "HOME" }) }); //Pagina principal
 
 app.use("/products", productRouter); //Pagina para usar todos los metodos de PRODUCTS
 app.use("/cookies", cookiesRouter); //Pagina para usar todos los metodos de COOKIES
 app.use("/users", usersRouter); //Pagina para usar todos los metodos de USERS
+app.use("/views", viewsRouter); //Pagina para usar todos los metodos de VIEWS
 
 app.use(errorHandler); //Manejador de errores
 

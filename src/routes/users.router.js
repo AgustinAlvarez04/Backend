@@ -1,33 +1,37 @@
 import { Router } from "express"; //Nos permitira manejar los endpoints del servidor por fuera de app.js
+import { userDao } from "../manager/user.manager.js";  //Importamos la instancia de la clase UserDao con el modelo de datos de usuarios
 
 const router = Router(); //instanciamos router
 
-const users = [
-  { username: "juan", password: "1234", admin: true },
-  { username: "pedro", password: "1234", admin: false },
-  { username: "maria", password: "1234", admin: false },
-];
+router.post("/register", async (req, res) => {
+  //Pagina para registrarse
+  try {
+    const {email, password} = req.body; //Extraemos el email y password del body
+    let user = null;
+    if(email === "adminCoder@coder.com" && password === "adminCod3r123") {
+      user = await userDao.register ({
+        ...req.body,
+        role: "admin"
+      })
+    } else user = await userDao.register(req.body); //Registramos el usuario
+    if (!user) return res.redirect("/errorRegister"); //Si el usuario ya existe
+    return res.redirect("/login"); //Si el usuario se registro con exito
+  } catch (error) {
+    res.send(error.message);
+  }
+});
 
-router.post("/login", (req, res) => {
-  //Pagina para loguearse
-  const { username, password } = req.body; //Extraemos el username y password del body
-  const index = users.findIndex(
-    //Buscamos el usuario en el array
-    (user) => user.username === username && user.password === password //Si el usuario y contraseña coinciden
-  );
-  if (index < 0)
-    //Si no existe el usuario
-    return res //Retornamos un mensaje de error
-      .status(401)
-      .json({ message: "Usuario o contraseña incorrectos" });
-  const user = users[index]; //Si existe el usuario
-  req.session.info = {
-    //Creamos la session del usuario
-    loggedIn: true, //Usuario logueado
-    count: 1, //Contador de sesiones
-    admin: user.admin, //Si es admin o no
-  };
-  res.json({ message: "Usuario logueado con exito" }); //Retornamos un mensaje de exito
+router.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body; //Extraemos el username y password del body
+    const user = await userDao.login(email, password); //Buscamos el usuario en la base de datos
+    if (user) {
+      req.session.email = email; //Guardamos el email en la session
+      res.render("perfil", { user }); //Retornamos la pagina de perfil
+    } else res.redirect("/login"); //Si el usuario no existe
+  } catch (error) {
+    res.send(error.message);
+  }
 });
 
 router.get("/logout", (req, res) => {
@@ -43,6 +47,5 @@ router.get("/info", (req, res) => {
   req.session.info.count++; //Aumentamos el contador de sesiones
   res.json(req.session.info); //Retornamos la informacion de la session
 });
-
 
 export default router; //Exportamos router
