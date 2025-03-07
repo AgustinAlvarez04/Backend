@@ -6,5 +6,7 @@ const router = Router();                        //instanciamos router
 router.get('/', controllers.getAll);            //Mediante el controllers nos retorna todos los productos
 router.post('/', controllers.create);           //Mediante el controllers creamos un producto nuevo
 router.get('/:id', controllers.getById);        //Mediante el controllers nos retorna el producto introducido por id
+router.put('/:id', controllers.update);     //Mediante el controllers actualizamos el producto introducido por id
+router.delete('/:id', controllers.remove);   //Mediante el controllers eliminamos el producto introducido por id
 
 export default router;                          //Exportamos para poder usarlos en app.js
