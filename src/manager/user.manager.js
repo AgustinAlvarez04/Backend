@@ -18,7 +18,17 @@ class UserDao {
   async login(email, password) {
     //Metodo para loguearse
     try {
-      return await this.model.findOne(email, password); //Retornamos el usuario que tenga el email y password que le pasamos por parametros
+      return await this.model.findOne({ email, password }); //Retornamos el usuario que tenga el email y password que le pasamos por parametros
+    } catch (error) {
+      //Si el usuario no se encuentra nos devolvera el error creado con anterioridad
+      throw new Error(error);
+    }
+  }
+
+  async getByEmail(email) {
+    //Metodo para loguearse
+    try {
+      return await this.model.findOne({ email }); //Retornamos el usuario que tenga el email y password que le pasamos por parametros
     } catch (error) {
       //Si el usuario no se encuentra nos devolvera el error creado con anterioridad
       throw new Error(error);
