@@ -2,8 +2,10 @@ import * as services from "../services/user.services.js";
 
 export const register = async (req, res) => {
   try {
-    const user = await services.register(req.body);
-    res.json(user);
+    res.json({
+      msg: "Register ok",
+      session: req.session
+    });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -11,8 +13,8 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
-    const user = await services.login(email, password);
+    const id = req.session.passport.user;
+    const user = await services.getById(id);
     res.json({msg: "Logeado correctamente", user});
   } catch (error) {
     res.send(error.message);
