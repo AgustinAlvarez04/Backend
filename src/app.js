@@ -3,7 +3,8 @@ import session from "express-session"; //Importamos el modulo de sesiones
 import cookieParser from "cookie-parser"; //Importamos el modulo de cookies
 import passport from "passport";  //Importamos el modulo de passport
 import "dotenv/config"; //Importamos el modulo de variables de entorno
-import "./passport/local.strategy.js"; //Importamos la estrategia de autenticacion
+// import "./passport/local.strategy.js"; //Importamos la estrategia de autenticacion
+import "./passport/github.strategy.js"; //Importamos la estrategia de autenticacion
 import MongoStore from "connect-mongo";   //Importamos el modulo de mongo para guardar las sesiones
 
 

@@ -13,8 +13,18 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
   try {
+    console.log(req.session)
     const id = req.session.passport.user;
     const user = await services.getById(id);
+    res.json({msg: "Logeado correctamente", user});
+  } catch (error) {
+    res.send(error.message);
+  }
+};
+
+export const GHProfile  = async (req, res) => {
+  try {
+    const user = req.user;
     res.json({msg: "Logeado correctamente", user});
   } catch (error) {
     res.send(error.message);

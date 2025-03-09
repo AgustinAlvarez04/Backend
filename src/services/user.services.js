@@ -1,4 +1,4 @@
-import { userDao } from "../manager/user.manager.js"
+import { userDao } from "../manager/user.manager.js";
 import { createHash, isValidPassword } from "../utils/bcrypt.js";
 
 export const register = async (user) => {
@@ -6,16 +6,8 @@ export const register = async (user) => {
     const { email, password } = user;
     const existUser = await userDao.getByEmail(email);
     if (existUser) throw new Error("User already exist");
-    if (email === "adminCoder@coder" && password === "adminCod3r123") {
-      return await userDao.register({
-        ...user,
-        password: createHash(password),
-        role: "admin",
-      });
-    }
     return await userDao.register({
       ...user,
-      password: createHash(password),
     });
   } catch (error) {
     throw error;
@@ -27,13 +19,12 @@ export const login = async (email, password) => {
     const userExist = await userDao.getByEmail(email);
     if (!userExist) throw new Error("User not exist");
     const passValid = isValidPassword(password, userExist);
-    if(!passValid) throw new Error("Password incorrect");
+    if (!passValid) throw new Error("Password incorrect");
     return userExist;
   } catch (error) {
     throw error;
   }
 };
-
 
 export const getByEmail = async (email) => {
   try {
@@ -41,12 +32,14 @@ export const getByEmail = async (email) => {
   } catch (error) {
     throw new Error(error);
   }
-}
+};
 
 export const getById = async (id) => {
   try {
-    return await userDao.getById(id);
+    const user = await userDao.getById(id);
+    if (!user) throw new Error("User not exist");
+    return user;
   } catch (error) {
     throw new Error(error);
   }
-}
+};

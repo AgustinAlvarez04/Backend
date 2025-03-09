@@ -10,6 +10,10 @@ router.post("/register", passport.authenticate("register"), controllers.register
 
 router.post("/login", passport.authenticate("login"), controllers.login); //Endpoint para loguearse
 
+router.get("/register-github", passportCall("github", { scope: ["user:email"] })); //Endpoint para registrar un usuario con github
+
+router.get("/profile", passportCall("github", { scope: ["user:email"] }), controllers.GHProfile); //Endpoint para registrar un usuario con github
+
 router.get("/private", isAuth, (req,res) => res.send("ruta privada")); //Endpoint para loguearse
 
 router.get("/logout", controllers.logout); //Endpoint para desloguearse

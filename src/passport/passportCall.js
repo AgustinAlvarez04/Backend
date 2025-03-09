@@ -1,12 +1,12 @@
 import passport from "passport";
 
-export const passportCall = (strategy) => {
+export const passportCall = (strategy , options = {}) => {
   return async (req, res, next) => {
-    passport.authenticate(strategy, (error, user, info) => {
+    passport.authenticate(strategy, options, (error, user, info) => {
       if (error) return next(error);
       if (!user)
         return res
-          .status(400)
+          .status(401)
           .json({ error: info.messages ? info.messages : info.toString() });
       req.user = user;
       next();
