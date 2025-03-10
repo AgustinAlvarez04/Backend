@@ -2,30 +2,32 @@ import * as services from "../services/user.services.js";
 
 export const register = async (req, res) => {
   try {
-    res.json({
-      msg: "Register ok",
-      session: req.session
-    });
+    const user = await services.register(req.body);
+    res.json(user);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    res.status(404).json({ message: error.message });
   }
 };
 
 export const login = async (req, res) => {
   try {
-    console.log(req.session)
-    const id = req.session.passport.user;
-    const user = await services.getById(id);
-    res.json({msg: "Logeado correctamente", user});
+    const { email, password } = req.body;
+    const user = await services.login(email, password);
+    const token = services.generateToken(user);
+    // res.header("Authorization", token); //Agregamos el token en el header
+
+    res.cookie("token", token, { httpOnly: true }); //Agregamos el token en las cookies
+
+    res.json({ msg: "Logeado correctamente", user });
   } catch (error) {
     res.send(error.message);
   }
 };
 
-export const GHProfile  = async (req, res) => {
+export const GHProfile = async (req, res) => {
   try {
     const user = req.user;
-    res.json({msg: "Logeado correctamente", user});
+    res.json({ msg: "Logeado correctamente", user });
   } catch (error) {
     res.send(error.message);
   }

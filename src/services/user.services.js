@@ -1,13 +1,37 @@
 import { userDao } from "../manager/user.manager.js";
 import { createHash, isValidPassword } from "../utils/bcrypt.js";
 
+import jwt from "jsonwebtoken";
+import "dotenv/config";
+
+const SECRET_KEY = process.env.SECRET_KEY;
+
+export const generateToken = (user) => {
+  const payload = {
+    first_name: user.first_name,
+    last_name: user.last_name,
+    email: user.email,
+    role: user.role,
+  };
+
+  return jwt.sign(payload, SECRET_KEY, { expiresIn: "15m" });
+};
+
 export const register = async (user) => {
   try {
     const { email, password } = user;
     const existUser = await userDao.getByEmail(email);
     if (existUser) throw new Error("User already exist");
+    if (email === "adminCoder@coder" && password === "adminCod3r123") {
+      return await userDao.register({
+        ...user,
+        password: createHash(password),
+        role: "admin",
+      });
+    }
     return await userDao.register({
       ...user,
+      password: createHash(password),
     });
   } catch (error) {
     throw error;

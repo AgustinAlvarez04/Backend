@@ -3,21 +3,37 @@ import * as controllers from "../controllers/users.controller.js"; //Importamos 
 import passport from "passport";
 import { passportCall } from "../passport/passportCall.js";
 import { isAuth } from "../middlewares/isAuth.js";
+import { extractTokenFromCookies, extractTokenFromHeaders } from "../middlewares/jwt.js";
 
 const router = Router(); //instanciamos router
 
-router.post("/register", passport.authenticate("register"), controllers.register); //Endpoint para registrar un usuario
+router.post("/register", controllers.register); //Endpoint para registrar un usuario
 
-router.post("/login", passport.authenticate("login"), controllers.login); //Endpoint para loguearse
-
-router.get("/register-github", passportCall("github", { scope: ["user:email"] })); //Endpoint para registrar un usuario con github
-
-router.get("/profile", passportCall("github", { scope: ["user:email"] }), controllers.GHProfile); //Endpoint para registrar un usuario con github
+router.post("/login", controllers.login); //Endpoint para loguearse
 
 router.get("/private", isAuth, (req,res) => res.send("ruta privada")); //Endpoint para loguearse
 
 router.get("/logout", controllers.logout); //Endpoint para desloguearse
 
 router.get("/info", controllers.info); //Endpoint para obtener la informacion del usuario
+
+
+router.get("/private-headers", extractTokenFromHeaders, (req,res, next) => {
+    try{
+        if(!req.user) throw new Error("No autorizado");
+        return res.json(req.user);
+    } catch (error){
+        next(error);
+    }
+});
+
+router.get("/private-cookies", extractTokenFromCookies, (req,res, next) => {
+    try{
+        if(!req.user) throw new Error("No autorizado");
+        return res.json(req.user);
+    } catch (error){
+        next(error);
+    }
+});
 
 export default router; //Exportamos router
